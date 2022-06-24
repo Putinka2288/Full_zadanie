@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Регистрация</h1>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            {{ form }}
+        </table>
+        <button
+                type="submit"
+                class="btn btn-primary"
+
+        >Регистрация
+        </button>
+
+    </form>
+    <script>
+        document.querySelector('#id_username').addEventListener('blur', async (event) => {
+            const res = await fetch(`/validate_username?username=${event.target.value}`).then(res => res.json());
+            event.target.parentElement.querySelector('.errorList')?.remove();
+            const errors = document.createElement('ul');
+            errors.classList.add('errorList');
+            const re = new RegExp("^[a-zA-Z0-9-]+$");
+            if (res.is_taken) {
+                errors.innerHTML = '<li>Пользователь с таким именем уже есть</li>';
+            } else if (event.target.value.length === 0) {
+                errors.innerHTML = '<li> Логин не может быть пустыми</li>';
+            } else if (!re.test(event.target.value)) {
+                errors.innerHTML += '<li>Разрещены только латиница, цифры или тире</li>';
+            }
+            event.target.parentElement.append(errors)
+        })
+
+        document.querySelector('#id_email').addEventListener('blur', async (event) => {
+            const res = await fetch(`/validate_mail?email=${event.target.value}`).then(res => res.json());
+            event.target.parentElement.querySelector('.errorList')?.remove();
+            const errors = document.createElement('ul');
+            errors.classList.add('errorList');
+            if (res.is_taken) {
+                errors.innerHTML = '<li>Пользователь с таким ящиком уже есть</li>';
+            }
+
+            const re = new RegExp("^[а-яА-Яa-zA-Z_0-9_]+@[0-9a-z]+\.[a-za-я]{2,3}$");
+            if (!re.test(event.target.value)) {
+                errors.innerHTML += '<li>Впишите корректные данные</li>';
+            }
+            event.target.parentElement.append(errors)
+        })
+        document.querySelector('#id_password').addEventListener('blur', async (event) => {
+
+            event.target.parentElement.querySelector('.errorList')?.remove();
+            const errors = document.createElement('ul');
+            errors.classList.add('errorList');
+
+            if (event.target.value.length <= 6) {
+                errors.innerHTML = '<li> Пароль должен быть больше 6 символов</li>';
+            }
+            if (event.target.value.length === 0) {
+                errors.innerHTML = '<li> Пароль не может быть пустыми</li>';
+            }
+            event.target.parentElement.append(errors)
+        })
+
+
+        document.querySelector('#id_password2').addEventListener('blur', async (event) => {
+
+            event.target.parentElement.querySelector('.errorList')?.remove();
+            const errors = document.createElement('ul');
+            errors.classList.add('errorList');
+            const pass1 = document.querySelector('#id_password')
+
+            if (event.target.value !== pass1.value) {
+                errors.innerHTML = '<li> Паполи не совпадают</li>';
+            }
+            if (event.target.value.length === 0) {
+                errors.innerHTML = '<li> Пароль не может быть пустыми</li>';
+            }
+            event.target.parentElement.append(errors)
+        })
+
+        document.querySelector('#id_name').addEventListener('blur', async (event) => {
+            event.target.parentElement.querySelector('.errorList')?.remove();
+
+            const errors = document.createElement('ul');
+            errors.classList.add('errorList');
+            const re = new RegExp("^[а-яА-Я- ]+$");
+            console.log(document.querySelector('#id_name').value)
+            if (!re.test(event.target.value)) {
+                errors.innerHTML += '<li>Впишите корректные данные</li>';
+            }
+            if (event.target.value.length === 0) {
+                errors.innerHTML = '<li> Заполните данные</li>';
+            }
+            event.target.parentElement.append(errors)
+        })
+
+        document.querySelector('#id_surname').addEventListener('blur', async (event) => {
+
+            event.target.parentElement.querySelector('.errorList')?.remove();
+            const errors = document.createElement('ul');
+            errors.classList.add('errorList');
+            const re = new RegExp("^[а-яА-Я- ]+$");
+            console.log(document.querySelector('#id_name').value)
+            if (!re.test(event.target.value)) {
+                errors.innerHTML += '<li>Впишите корректные данные</li>';
+            }
+            if (event.target.value.length === 0) {
+                errors.innerHTML = '<li> Заполните данные</li>';
+            }
+            event.target.parentElement.append(errors)
+        })
+
+        document.querySelector('#id_patronymic').addEventListener('blur', async (event) => {
+            event.target.parentElement.querySelector('.errorList')?.remove();
+            const errors = document.createElement('ul');
+            const patronymic = document.querySelector('#id_patronymic');
+            errors.classList.add('errorList');
+            const re = new RegExp("^[а-яА-Я- ]+$");
+
+            if (!re.test(event.target.value) && patronymic.value.length !== 0) {
+                errors.innerHTML += '<li >Впишите корректные данные</li>';
+            }
+            event.target.parentElement.append(errors)
+        })
+
+
+    </script>
+
+{% endblock %}
